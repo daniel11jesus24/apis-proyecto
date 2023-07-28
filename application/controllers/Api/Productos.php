@@ -1,60 +1,41 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Productos extends CI_Controller {
+require APPPATH . 'libraries/REST_Controller.php';
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->load->model('Mimodelo');
-        $this->load->helper('url');
+class Productos extends REST_Controller{
+
+    public function __construct(){
+        parent:: __construct();
+        $this->load->database();
     }
 
-    public function bienvenida()
-	{
-		$this->load->view('Productos/bienvenida_view');
-	}
-
-    public function listaCategorias() {
-        
-        $categorias = $this->Mimodelo->getCategorias();
-
-        $data = array(
-            'categorias'    =>  $categorias,
-        );
-
-        $this->load->view('Productos/categorias_view', $data);
-
+    public function index_get($id=0){
+        // En caso de recuperar un producto especifico
+        if (!empty($id)) {
+            $data = $this->db->get_where("producto", ['id_producto'=>$id])->row_array();
+        }
+        // recuperar todos los producto
+        else{
+            $data = $this->db->get("producto")->result();
+        }
+        $this->response($data, REST_Controller::HTTP_OK);
     }
 
-    public function insertarCategoria() {
-        $valores = array(
-            'activo'   =>   $this->input->post('status'),
-            'fecha'    =>  date("Y-m-d H:i:s"),
-            'nombre'   =>   $this->input->post('nombre'),
-        );
-        $this->Mimodelo->addCategoria($valores);
+    public function index_post(){
+        $input = $this->input->post();
+        $this->db->insert("producto", $input);
+        $this->response(['Producto agregado'], REST_Controller::HTTP_OK);
     }
 
-    public function insertar_categoria() {
-        $this->load->view('Productos/insertar_categoria_view');
+    public function index_put($id){
+        $input = $this->put();
+        $this->db->update("producto", $input, array("id_producto" => $id));
+        $this->response(['Producto actualizado'], REST_Controller::HTTP_OK);
     }
 
-    public function eliminarCategoria() {
-        $id = $this->uri->segment(2);
-        $this->Mimodelo->lessCategoria($id);
-        redirect(base_url('index.php/Productos/listaCategorias'));
-    }
-
-    public function actualizarCategoria() {
-        $id = $this->uri->segment(2);
-        $categorias = $this->Mimodelo->getCategorias($id);
-        $categoria = ( $categorias!=false ) ?  $categorias->row(0) : false; 
-        $data = array(
-            'categoria' =>  $categoria,
-        );
-
-        $this->load->view('Productos/actualizar_categoria_view', $data);
+    public function index_delete($id){
+        $this->db->delete("producto", array("id_producto" => $id));
+        $this->response(['Producto eliminado'], REST_Controller::HTTP_OK);
     }
 
 }
