@@ -2,6 +2,18 @@
 
 require APPPATH . 'libraries/REST_Controller.php';
 
+// Permitir el acceso desde cualquier origen (*)
+header("Access-Control-Allow-Origin: *");
+
+// Permitir las siguientes cabeceras HTTP
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+
+// Permitir las siguientes solicitudes HTTP
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 class Usuarios extends REST_Controller{
 
     public function __construct(){

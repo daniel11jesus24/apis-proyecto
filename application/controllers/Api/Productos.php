@@ -2,6 +2,7 @@
 
 require APPPATH . 'libraries/REST_Controller.php';
 
+
 // Permitir el acceso desde cualquier origen (*)
 header("Access-Control-Allow-Origin: *");
 

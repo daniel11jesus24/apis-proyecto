@@ -2,6 +2,18 @@
 
 require APPPATH . 'libraries/REST_Controller.php';
 
+// Permitir el acceso desde cualquier origen (*)
+header("Access-Control-Allow-Origin: *");
+
+// Permitir las siguientes cabeceras HTTP
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+
+// Permitir las siguientes solicitudes HTTP
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 class Entrada_salida extends REST_Controller
 {
 
@@ -26,18 +38,18 @@ class Entrada_salida extends REST_Controller
     {
         $input = $this->input->post();
         $this->db->insert("entrada_salida", $input);
-        $this->response(['Entrada_salida agregada'], REST_Controller::HTTP_OK);
+        $this->response(['Entrada/salida agregada'], REST_Controller::HTTP_OK);
     }
     public function index_put($id)
     {
         $input = $this->put();
         $this->db->update("entrada_salida", $input, array("IdEntrada" => $id));
-        $this->response(['Entrada_salida actualizada'], REST_Controller::HTTP_OK);
+        $this->response(['Entrada/salida actualizada'], REST_Controller::HTTP_OK);
     }
     public function index_delete($id)
     {
         $this->db->delete("entrada_salida", array("IdEntrada" => $id));
-        $this->response(['Entrada_salida eliminada'], REST_Controller::HTTP_OK);
+        $this->response(['Entrada/salida eliminada'], REST_Controller::HTTP_OK);
     }
 
 }
